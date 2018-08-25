@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div id="test">尚硅谷IT教育</div>
+<div id="demo">
+  <ul id="fragment_test">
+    <li>test1</li>
+    <li>test2</li>
+    <li>test3</li>
+  </ul>
+</div>
+
+
+
+<!--
+1. [].slice.call(lis): 将伪数组转换为真数组
+2. node.nodeType: 得到节点类型
+3. Object.defineProperty(obj, propertyName, {}): 给对象添加属性(指定描述符)
+4. Object.keys(obj): 得到对象自身可枚举属性组成的数组
+5. obj.hasOwnProperty(prop): 判断prop是否是obj自身的属性
+6. DocumentFragment: 文档碎片(高效批量更新多个节点)
+-->
+
+<script type="text/javascript">
+  /*伪数组只有长度和数字下标属性*/
+var lis = document.getElementsByTagName('li');
+console.log(lis instanceof Array ,lis.forEach);
+const lis2 = Array.from(lis);
+console.log(lis2.forEach)//es6 把伪书组转化成真数组
+Array.prototype.slice2 = function (start,end) {
+    var arr = [];
+    for(var i = start ; i<end ; i++){
+        arr.push(this[i])
+    }
+    return arr
+};
+/*在Array的原型上强制改变函数的this指向，this为函数的第一个参数对象，
+* 这样就可以迷惑js引擎，把伪书组当成真数组*/
+  const list3 =Array.prototype.slice.call(lis)
+console.log(list3 instanceof Array ,list3.forEach)
+/*节点类型有三种
+* 一 document
+* 二 element
+* 三  {Text Attribute}*/
+/*2. node.nodeType: 得到节点类型*/
+const elementNode = document.getElementById('test'); //1
+  const AttrNode = elementNode.getAttributeNode('id') //2
+  const TextNode = elementNode.firstChild //3
+  console.log(elementNode.nodeType,AttrNode.nodeType,TextNode.nodeType)
+  /*3. Object.defineProperty(obj, propertyName, {}): 给对象添加属性(指定描述符)*/
+  var obj = {
+      firstName:'A',
+      lastName:'B'
+  }
+  Object.defineProperty(obj,'fullName',{
+      configurable:true,//是否可以重新定义
+      enumerable:true,
+      get (){
+        return this.fullName = this.firstName +'-'+ this.lastName
+      },
+      set(value){
+          const names=value.split('-');
+          this.firstName = names[0];
+          this.lastName = names[1];
+      }
+
+  })
+  /*4. Object.keys(obj): 得到对象自身可枚举属性组成的数组*/
+  for(let str in obj){
+      console.log(str)
+  }
+ const objArr = Object.keys(obj)
+  console.log(objArr)
+  /*5. obj.hasOwnProperty(prop): 判断prop是否是obj自身的属性*/
+console.log(obj.hasOwnProperty('fullName'))
+  console.log(obj.hasOwnProperty('toString'))//toString是原型链上的属性
+  /*6. DocumentFragment: 文档碎片(高效批量更新多个节点)*/
+  /*在内存中创建一个节点容器，用来存取页面中的节点，这样可以减少重绘重排*/
+  const fragment = document.createDocumentFragment()
+  const divs = document.getElementById('demo')
+  let child;
+  /*先找到divs的第一个孩子，当前divs有三个孩子，换行，<ul></ul>,换行，
+  * 然后赋值给divs，
+  * 然后判断child存不存在，
+  * 如果存在就执行*/
+  /*每个节点只能有一个父级，这样页面中的节点就会删除，然后追加到fragmentr容器中*/
+  /*fragment.childNodes   = NodeList(3) [text, ul#fragment_test, text]*/
+
+  while(child = divs.firstChild){
+      fragment.appendChild(child)
+  }
+
+  [].slice.call(fragment.childNodes[1].children).forEach(li=>{
+      li.textContent = 'atguigu'
+  });
+
+  divs.appendChild(fragment)
+
+</script>
+</body>
+</html>

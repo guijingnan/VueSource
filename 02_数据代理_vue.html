@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>02_数据代理_vue</title>
+</head>
+<body>
+<div id="demo"></div>
+<script type="text/javascript"src="./js/vue.js"></script>
+<script type="text/javascript">
+ const vm = new Vue({
+      el:'#demo',
+      data:{
+          name:'Bob',
+          age:18
+      },
+
+  })
+  console.log(vm.name) //Bob 代理读，调用过了get
+  vm.name = 'jarry'//代理写，调用过了set
+  console.log(vm._data.name)//'jarry'
+
+</script>
+</body>
+</html>
